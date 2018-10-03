@@ -62,7 +62,7 @@ class EncodingTest {
     fun `decode # Charli 1`() {
         assertNull("Charli 1".decode())
     }
-  
+
     @Test
     fun `decode # 1 mail`() {
         assertEquals("1 mail", "1 MikeAlfaIndiaLima".decode())
