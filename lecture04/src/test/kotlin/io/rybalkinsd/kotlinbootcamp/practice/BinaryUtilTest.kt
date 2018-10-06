@@ -1,6 +1,7 @@
 package io.rybalkinsd.kotlinbootcamp.practice
 
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Ignore
 import org.junit.Test
 
@@ -28,6 +29,12 @@ class BinaryUtilTest {
     @Test(expected = NumberFormatException::class)
     fun `broken string convert`() {
         "404e1".toBinary()
+    }
+
+    @Test
+    fun name(){
+        assertTrue("aaaga".all{it=='a'})
+
     }
 
 }
