@@ -21,6 +21,8 @@ sealed class Profile(
  * Declare classes for all data sources
  */
 class FacebookProfile(id: Long) : Profile(dataSource = DataSource.FACEBOOK, id = id)
+class VKProfile(id: Long) : Profile(dataSource = DataSource.VK, id = id)
+class LinkedInProfile(id: Long) : Profile(dataSource = DataSource.LINKEDIN, id = id)
 
 /**
  * Task #2
@@ -39,6 +41,30 @@ val avgAge: Map<DataSource, Double> = emptyMap()
  */
 val groupedProfiles: Map<Long, List<Profile>> = emptyMap()
 
+fun parse(s: String){
+    Profile(1, if (s.contains("firstName")) s.substringAfter("firstName=").substringBefore(",") else null,
+            if (s.contains("lastName")) s.substringAfter("lastName=").substringBefore(",") else null ,
+            if (s.contains("age")) s.substringAfter("age=").substringBefore(",").toInt() else null,DataSource.LINKEDIN )
+    DataSource.valueOf("VK")
+    println(s.substringAfter("source=").substringBefore(",").toUpperCase())
+    println(s.substringAfter("age=").substringBefore(",").toInt())
+    println(s.substringAfter("fisrtName=").substringBefore(","))
+    if (s.contains("lastName")) s.substringAfter("lastName=").substringBefore(",") else null )
+    println(s.substringAfter("lastName=").substringBefore("\n").substringBefore(","))
+
+}
+
+fun main(vararg : Array<String>){
+    parse(rawProfiles[0].rawData)
+}
+
+
+fun rawProfilesParse(profiles: List<String>) : List<Profile> {
+    var a = listOf{profiles.forEach {
+        //when(values)
+    }}
+    return emptyList()
+}
 /**
  * Here are Raw profiles to analyse
  */
