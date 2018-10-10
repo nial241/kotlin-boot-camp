@@ -1,6 +1,7 @@
 package io.rybalkinsd.kotlinbootcamp.practice.server
 
 import io.rybalkinsd.kotlinbootcamp.util.logger
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -41,24 +42,62 @@ class ChatController {
      * curl -i localhost:8080/chat/online
      */
     @RequestMapping(
-        path = ["online"],
+        path = ["/online"],
         method = [RequestMethod.GET],
         produces = [MediaType.TEXT_PLAIN_VALUE]
     )
-    fun online(): ResponseEntity<String> = TODO()
+    fun online(): ResponseEntity<String> = when {
+            usersOnline.isEmpty() -> ResponseEntity.badRequest().body("No logged in users")
+            else -> ResponseEntity(usersOnline.values.joinToString(", ", "logged in users: "), HttpStatus.OK)
+    }
 
     /**
      * curl -X POST -i localhost:8080/chat/logout -d "name=I_AM_STUPID"
      */
-    // TODO
+    @RequestMapping(
+            path = ["/logout"],
+            method = [RequestMethod.DELETE],
+            produces = [MediaType.TEXT_PLAIN_VALUE]
+    )
+    fun logout(@RequestParam("name") name: String) = when {
+        name.isEmpty() -> ResponseEntity.badRequest().body("Name is too short")
+        name.length > 20 -> ResponseEntity.badRequest().body("Name is too long")
+        !usersOnline.contains(name) -> ResponseEntity.badRequest().body("Not logged in")
+        else -> {
+            usersOnline.remove(name)
+            messages += "[$name] logged out".also { log.info(it) }
+            ResponseEntity.ok().build()
+        }
+    }
 
     /**
      * curl -X POST -i localhost:8080/chat/say -d "name=I_AM_STUPID&msg=Hello everyone in this chat"
      */
-    // TODO
-
+    @RequestMapping(
+            path = ["/say"],
+            method = [RequestMethod.POST],
+            consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE]
+    )
+    fun say(@RequestParam("name") name: String, @RequestParam("msg")msg: String): ResponseEntity<String> = when {
+        name.isEmpty() -> ResponseEntity.badRequest().body("Name is too short")
+        name.length > 20 -> ResponseEntity.badRequest().body("Name is too long")
+        msg.isEmpty() -> ResponseEntity.badRequest().body("Msg is too short")
+        !usersOnline.contains(name) -> ResponseEntity.badRequest().body("Not logged in")
+        else -> {
+            messages += "[$name] $msg".also { log.info(it) }
+            ResponseEntity.ok().build()
+        }
+    }
     /**
-     * curl -i localhost:8080/chat/chat
+     * curl -i localhost:8080/chat/history
      */
-    // TODO
+    @RequestMapping(
+            path = ["/history"],
+            method = [RequestMethod.GET],
+            produces = [MediaType.TEXT_PLAIN_VALUE]
+    )
+    fun history(): ResponseEntity<String> = when {
+        usersOnline.isEmpty() -> ResponseEntity.badRequest().body("No  history")
+        else -> ResponseEntity.ok(messages.joinToString("\n", "All history \n"))
+    }
 }
